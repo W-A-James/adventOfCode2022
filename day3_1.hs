@@ -1,7 +1,11 @@
+{-# LANGUAGE GADTs #-}
+
 import Data.Char
 import Data.List
 
-data Rucksack = Rucksack {p1 :: String, p2 :: String} deriving (Show)
+data Rucksack where
+  Rucksack :: {p1 :: String, p2 :: String} -> Rucksack
+  deriving (Show)
 
 getRucksack :: String -> Rucksack
 getRucksack [] = Rucksack [] []
@@ -10,7 +14,7 @@ getRucksack l =
    in Rucksack (take mid l) (drop mid l)
 
 getRucksackOverlap :: Rucksack -> Char
-getRucksackOverlap r = head $ intersect (p1 r) (p2 r)
+getRucksackOverlap (Rucksack p1 p2) = head $ intersect p1 p2
 
 getOverlapValue :: Char -> Int
 getOverlapValue c

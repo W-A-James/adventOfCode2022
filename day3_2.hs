@@ -14,7 +14,7 @@ getGroups (l0 : l1 : l2 : ls) = Group l0 l1 l2 : getGroups ls
 getGroups other = error "Length not multiple of 3"
 
 getGroupValue :: Group -> Int
-getGroupValue g = getOverlapValue . head $ intersect (r1 g) (r2 g `intersect` r3 g)
+getGroupValue (Group r1 r2 r3) = getOverlapValue . head $ intersect r1 (r2 `intersect` r3)
 
 getOverlapValue :: Char -> Int
 getOverlapValue c
