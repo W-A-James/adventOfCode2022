@@ -18,8 +18,11 @@ getGroupValue (Group r1 r2 r3) = getOverlapValue . head $ intersect r1 (r2 `inte
 
 getOverlapValue :: Char -> Int
 getOverlapValue c
-  | isUpper c = ord c - ord 'A' + 27
-  | otherwise = ord c - ord 'a' + 1
+  | isUpper c = ord c - _A + 27
+  | otherwise = ord c - _a + 1
+  where
+    _a = ord 'a'
+    _A = ord 'A'
 
 doMain :: String -> Int
 doMain = sum . map getGroupValue . getGroups . lines
