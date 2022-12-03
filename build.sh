@@ -3,6 +3,9 @@ shopt -s nullglob
 set -e
 
 BUILDDIR=./build
+TEMPLATE=".__tmp__.aoc2022.XXXXXXXXXXXX"
+TMPFILE_PATTERN="$(basename $TEMPLATE .XXXXXXXXXXXX).*"
+N=4
 
 usage() {
   echo "Usage: $0 [ OPTIONS ]" 
@@ -32,23 +35,35 @@ if [ ! -d $BUILDDIR ]; then
   mkdir $BUILDDIR
 fi
 
-for file in $(pwd)/*.hs
-do
-  tmpdir=$(mktemp -d)
+processFile() {
+  local file=$1
+  local tmpdir=$(mktemp -d -p . $TEMPLATE)
   # check if executable already exists
-  target="$BUILDDIR/$(basename $file .hs)"
-  command="ghc -no-keep-o-files -no-keep-hi-files -outputdir $tmpdir -O2 $file -o $target"
+  local target="$BUILDDIR/$(basename $file .hs)" 
+  local command="ghc -no-keep-o-files -no-keep-hi-files -outputdir $tmpdir -O2 $file -o $target"
   if [ -f $target ]; then
-    targetLastModified=$(date -r $target "+%s")
-    sourceLastModified=$(date -r $file "+%s")
+    local targetLastModified=$(date -r $target "+%s")
+    local sourceLastModified=$(date -r $file "+%s")
     if [ $targetLastModified -gt $sourceLastModified ]; then
       echo "Nothing to do for $target"
-      rm -rf $tmpdir &
+      rm -rf $tmpdir
     else
-      exec $command && rm -rf $tmpdir &
+      exec $command
+      rm -rf $tmpdir
     fi
   else
-      exec $command && rm -rf $tmpdir &
+      exec $command
+      rm -rf $tmpdir
+  fi
+}
+
+for file in $(pwd)/*.hs
+do
+  processFile $file &
+  if [[ $(jobs -p -r | wc -l) -ge $N ]]; then
+    wait -n
   fi
 done
 wait
+
+rm -rf $TMPFILE_PATTERN
