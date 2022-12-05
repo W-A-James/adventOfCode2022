@@ -47,6 +47,5 @@ getScore = foldr (\(op, pl) acc -> getScore_ (getOutcome op pl) pl + acc) 0
 
 main :: IO ()
 main = do
-  contents <- getContents
-  let rounds = getRounds . lines $ contents
-   in print $ getScore rounds
+  score <- fmap (getScore . getRounds . lines) getContents
+  print score

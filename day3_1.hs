@@ -24,11 +24,10 @@ getOverlapValue c
     _a = ord 'a'
     _A = ord 'A'
 
-doMain :: String -> Int
-doMain = sum . map (getOverlapValue . getRucksackOverlap . getRucksack) . lines
+getOverlapSum :: String -> Int
+getOverlapSum = sum . map (getOverlapValue . getRucksackOverlap . getRucksack) . lines
 
 main :: IO ()
 main = do
-  contents <- getContents
-
-  print $ doMain contents
+  overlapSum <- fmap getOverlapSum getContents
+  print overlapSum

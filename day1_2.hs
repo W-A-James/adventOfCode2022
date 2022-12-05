@@ -13,9 +13,8 @@ getCalories = foldr step []
       if null x
         then 0 : current : others
         else ((read x) + current) : others
-
 main = do
-  puzzleInput <- getContents
-  print $ sumTopThree (getCalories $ lines puzzleInput)
+  result <- fmap (sumTopThree . getCalories . lines) getContents
+  print result
   where
-    sumTopThree = foldr1 (+) . take 3 . reverse . sort
+    sumTopThree = sum . take 3 . reverse . sort

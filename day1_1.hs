@@ -14,6 +14,5 @@ getCalories = foldr step []
         then 0 : current : others
         else ((read x) + current) : others
 main = do
-  puzzleInput <- getContents
-  let maxFood = foldr1 max (getCalories (lines puzzleInput))
-   in print $ maxFood
+  maxFood <- fmap (maximum . getCalories . lines) getContents
+  print maxFood

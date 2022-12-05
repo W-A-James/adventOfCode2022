@@ -15,5 +15,5 @@ getMaxCalories inputLines = snd $ foldr step (0, 0) inputLines
 
 main :: IO ()
 main = do
-  puzzleInput <- B.getContents
-  print $ getMaxCalories (B.split '\n' puzzleInput)
+  maxCalories <- fmap (getMaxCalories . B.split '\n') B.getContents
+  print maxCalories
